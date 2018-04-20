@@ -9,6 +9,7 @@ function [parking_over_parking_curbside_new, parking_revenue_out, percent_privat
 %param[in] AV_adoption_rate: from 0%, 5%...100%
 %param[in] id: (id)th adoption rate of AV
 
+constants_tpa
 
 %in case of parking ratio = 0
 if parking_over_parking_curbside == 0 
@@ -102,10 +103,10 @@ fprintf('Number of parking for short term hourly: %f, daily %f, long term %f, ec
 %step5 parking time
 % all parking time information is from 2011 TPA transaction counts
 %step5.1 parking time--short term hourly
-X = 6;  %hours
-area = 0.87;      % 87% of people in short term hourly is under 6 hours
+X = TIME_SHORT_TERM_HOURLY;  %hours
+area = PERCENT_SHORT_TERM_HOURLY;      % 87% of people in short term hourly is under 6 hours
 Z = norminv(area);
-mu1 = 54/60;      % average parking time of short term hourly is 54 mins
+mu1 = AVERAGE_PARKING_SHORT_TERM_HOURLY;      % average parking time of short term hourly is 54 mins
 sigma1 = (X-mu1)/Z;
 
 histogram1 = zeros(num_parking_mode1,1);
