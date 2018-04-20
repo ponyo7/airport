@@ -10,9 +10,9 @@ num_all_IDs = sum(enplanements);
 
 %calculate residents and tourists passenger, r_rate =  residents rate,
 %t_rate = tourists rate
-R_rate = 
-T_rate =
-Transfer_rate = 
+% R_rate = 
+% T_rate =
+% Transfer_rate = 
 
 num_all_IDs = sum(enplanements);
 
@@ -203,7 +203,7 @@ for n=1:num
         end
     end
     
-    parking_cost_calculation;
+    [count_AV, count_parking, parking_fee_lost, parking_revenue] = parking_cost_calculation(simulation_all, num_all_IDs);
     
     count_AV_all(n) = count_AV;
     count_parking_all(n) = sum(count_parking);
