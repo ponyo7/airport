@@ -8,22 +8,26 @@ end
 
 num_all_IDs = sum(enplanements);
 
-%calculate residents and tourists passenger, r_rate =  residents rate,
-%t_rate = tourists rate
-% R_rate = 
-% T_rate =
-% Transfer_rate = 
-
-num_all_IDs = sum(enplanements);
+%define variables
+percent_resident_tourist = [0.5 0.5] %status, resident or tourist
+percent_resident_travel_mode = [0.196 0.363 0.036 0.369];  %1. private car, 2. tnc and taxis, 3. comfortable public transit, 4. economic public transit
+percet_tourist_travel_mode = [0.196 0.363 0.036 0.369 0.00]; %1. private car, 2. tnc and taxis, 3. comfortable public transit, 4. economic public transit, 5. rental car/car sharing
 
 %contains all information for each ID
-simulation_all = zeros(num_all_IDs, 7);% 1: IDs, 2: Zip codes, 3: travel modes 4. parking modes 5. parking time 6.distance 7. private car that has AV or not
+simulation_all = zeros(num_all_IDs, 7);
+% 1: IDs, 2: Zip codes, 3: travel modes 4. parking modes 5. parking time 6.distance 7. private car that has AV or not
+
+% 1: IDs, 2: Zip codes, 3: travel modes 4. parking modes 5. parking time
+% 6.distance 7. private car that has AV or not 8. status 9.activity mode
 
 %step1 generating IDs
 simulation_all(:,1) = 1:num_all_IDs;
 
-%step2 generating zip codes
-zipcodes = dlmread('ZipCodes.txt');
+%step2 generate status
+simulation_all(:,8) = 1:num_all_IDs; % 1. resident, 2. tourist
+
+%step3 generating origination zip codes
+zipcodes = dlmread('ZipCodes.txt'); %zipcodes are ordered from the smallest to largest
 zipcode_by_id = generate_zip_codes(zipcodes, enplanements);
 simulation_all(:,2) = zipcode_by_id;
 
@@ -45,10 +49,19 @@ for i=1:num_all_IDs
     end
 end
 
-%step3 generating travel modes
-percent_travel_mode = [0.196 0.363 0.036 0.369 0.036 ];  %1. private parking, 2. curbside, 3. commercial vehicle resident, 4. rental car,  5. commercial vehicle tourist
-distribution = modes_distribution_by_percentile(num_all_IDs, percent_travel_mode);
-simulation_all(:,3) = distribution;
+%step4 generating travel modes
+distribution_travel_mode_resident = modes_distribution_by_percentile(num_travel1, percent_resident_travel_mode);
+distribution = zeros(num_all_IDs,1);
+for i=1:num_all_IDs
+    if simulation_all(i,8)==1 % resident
+        distribution(i) = distribution_private_parking(j);
+        j = j+1;
+    end
+end
+
+% if simulattion_all(:,2)
+% distribution = modes_distribution_by_percentile(num_all_IDs, percent_travel_mode);
+% simulation_all(:,3) = distribution;
 
 %verifying the correctness of travel modes
 idx_travel1 = (simulation_all(:,3)==1);
@@ -64,7 +77,7 @@ distribution_private_parking = modes_distribution_by_percentile(num_travel1, per
 distribution = zeros(num_all_IDs,1);
 j=1;
 for i=1:num_all_IDs
-    if simulation_all(i,3)==1
+    if simulation_all(i,3)==1 % travel mode =private car
         distribution(i) = distribution_private_parking(j);
         j = j+1;
     end
@@ -203,7 +216,7 @@ for n=1:num
         end
     end
     
-    [count_AV, count_parking, parking_fee_lost, parking_revenue] = parking_cost_calculation(simulation_all, num_all_IDs);
+    parking_cost_calculation;
     
     count_AV_all(n) = count_AV;
     count_parking_all(n) = sum(count_parking);
