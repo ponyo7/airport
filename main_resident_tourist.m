@@ -4,7 +4,7 @@
 % 2. compute revenue for reach person (each row)
 
 %----------------------step1 generate simulation table---------------------
-% @param[input]  1*8, 1: IDs,2: trip purpose 3: zip codes 4: travel modes 5: activity 6: parking mode, 7: parking time 8: distance 9: revenue
+%1*9, 1: IDs,2: trip purpose 3: zip codes 4: travel modes 5: activity 6: parking mode, 7: parking time 8: distance 9: revenue
 simulation_all = generate_simulation_table();
 num_rows = size(simulation_all);
 
