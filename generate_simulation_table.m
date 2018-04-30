@@ -30,8 +30,16 @@ percent_travel_mode_tourist = [0, 0.25, 0.25, 0.25, 0.25]; %FIXME: fill them in 
 percent_activity_private_car = [1/3, 1/3, 1/3]; %park_at_airport, park_off_airport, curbside, 
 %percent_activity_tnc = [0.5, 0.5]; %curbside, park_temporary
 percent_activity_rentalcar = [0.5 0.5]; % rentalcar_on_airport, rentalcar_off_airport
-percent_parking_mode = [0.5 0.2 0.3]; %short term hourly, short term daily, long term 
+percent_parking_mode = [0.5 0.2 0.3 0]; %short term hourly, short term daily, long term, economic parking 
 num_zipcode = 500; %FIXME
+st_hourly_mu = 54/60;
+st_hourly_sigma = 5; %FIXME
+st_daily_mu = 54/60;
+st_daily_sigma = 5; %FIXME
+lt_daily_mu = 54/60;
+lt_daily_sigma = 5; %FIXME
+eco_parking_mu = 54/60;
+eco_parking_sigma = 5; %FIXME
 
 %contains all information for each ID
 simulation_all = zeros(num_all_IDs, 9);
@@ -45,8 +53,8 @@ simulation_all = zeros(num_all_IDs, 9);
 % 8: distance: only for resident
 % 9: revenue: revenue from this person
 
-idx_travel1 = (simulation_all(:,3)==1);
-idx_travel2 = (simulation_all(:,3)==2);
+idx_travel1 = (simulation_all(:,2)==1); %resident
+idx_travel2 = (simulation_all(:,2)==2); %tourist
 num_travel1 = sum(idx_travel1);
 num_travel2 = sum(idx_travel2);
 
@@ -129,6 +137,96 @@ simulation_all(:,6) = distribution;
 %copy and modify it from main_method1_*
 %make it a function, so you can just call it to simply things
 %1. parking time--short term hourly
+% X = 6;
+% area = 0.87;
+% Z = norminv(area);
+
+histogram1 = zeros(num_parking_mode1,1);
+k1 = 1;
+for i=1:num_all_IDs
+    if( simulation_all(i,6) ==1) %short term hourly
+        while 1
+            time = normrnd(st_hourly_mu, st_daily_sigma);
+            if(time>0)
+                simulation_all(i,7) = time;
+                histogram1(k1) = time;
+                k1 = k1+1;
+                break;
+            end
+        end
+    end
+end
+val = simulation_all(:,7);
+idx = val>0;
+figure(1);
+hist(histogram1);
+
+%2. parking time--short term daily
+% X = 8;
+% area = 0.01;
+% Z = norminv(area);
+
+histogram2 = zeros(num_parking_mode2,1);
+k2 = 1;
+for i=1:num_all_IDs
+    if( simulation_all(i,6) ==2)
+        while 1
+            time = normrnd(st_daily_mu, st_daily_sigma);
+            if(time>0)
+                simulation_all(i,7) = time;
+                histogram2(k2) = time;
+                k2 = k2+1;
+                break;
+            end
+        end
+    end
+end
+val = simulation_all(:,7);
+idx = val>0;
+figure(2);
+hist(histogram2);
+
+%3.parking time--long term 
+histogram3 = zeros(num_parking_mode3,1);
+k3 = 1;
+for i=1:num_all_IDs
+    if( simulation_all(i,6) ==3)
+        while 1
+            time = normrnd(lt_parking_mu, lt_parking_sigma);
+            if(time>0)
+                simulation_all(i,7) = time;
+                histogram2(k3) = time;
+                k3 = k3+1;
+                break;
+            end
+        end
+    end
+end
+val = simulation_all(:,7);
+idx = val>0;
+figure(3);
+hist(histogra3);
+
+%4.parking time--economic parking 
+histogram4 = zeros(num_parking_mode4,1);
+k4 = 1;
+for i=1:num_all_IDs
+    if( simulation_all(i,6) ==4)
+        while 1
+            time = normrnd(eco_parking_mu, eco_parking_sigma);
+            if(time>0)
+                simulation_all(i,7) = time;
+                histogram2(k4) = time;
+                k4 = k4+1;
+                break;
+            end
+        end
+    end
+end
+val = simulation_all(:,7);
+idx = val>0;
+figure(4);
+hist(histogram4);
 
 
 %------------------col8 distance-------------------------------------------
