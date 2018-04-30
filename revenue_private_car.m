@@ -3,7 +3,7 @@ function revenue = revenue_private_car(simulation_row)
 % @param[input]  1*8, 1: IDs,2: trip purpose 3: zip codes 4: travel modes 5: activity 6: parking time 7: distance 8: revenue: revenue from this person
 % @param[output] revenue
 %
-CURB_PER_TRIP_CHARGE = 0; % FIXME
+CURB_PER_TRIP_CHARGE = 0; % FIXME: fill in real number from airport
 
 assert(simulation_row(2)==1 && simulation_row(4)==1); % must be resident and private car
 
