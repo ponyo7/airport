@@ -1,19 +1,30 @@
+%function simulation_all = generate_simulation_table()
 %
 % This function create a n*9 simulation table. Each row represents a person.
 % Please refer to the comments for what each col represent
 %
+%TODO: pull all constants and input here
 
 clear;
-enplanements = dlmread('Enplanements_2011.txt'); %numbers must be positive or 0
-idx = enplanements < 0 ;
-if sum(idx)>=1
+zipcodes_enplanement_resident = dlmread('zipcode_enplanement_resident.txt');%nx2 zipcode, enplanements
+zipcodes_enplanement_tourist = dlmread('zipcode_enplanement_tourist.txt');%nx2 zipcode, enplanements
+zipcodes_resident = zipcodes_enplanement_resident(:,1);
+zipcodes_tourist = zipcodes_enplanement_tourist(:,2);
+enplanements_resident = zipcodes_enplanement_resident(:,2); %numbers must be positive or 0
+enplanements_tourist = zipcodes_enplanement_tourist(:,2); %enplanemnts must have same # of rows
+assert(size(enplanements_resident, 1)==size(enplanements_tourist,1))
+idx0 = enplanements_residnet < 0 ;
+idx1 = enplanements_tourist < 0 ;
+if sum(idx0)>=1 || sum(idx1)>=1
     error('Error! Negtive enplanement number detected! Please check the excel file\n');
 end
-
-num_all_IDs = sum(enplanements);
+enplanements_all = enplanements_resident + enplanements_tourist;
+num_all_IDs = sum(enplanements_all);
+num_residents = sum(enplanements_resident, 1);
+num_tourist = sum(enplanements_tourist, 1);
 
 %All fake numbers for now, FIXME: get real numbers
-percent_trip_purpose = [0.5, 0.5]; %FIXME: get percentage of resident and tourist
+%percent_trip_purpose = [0.5, 0.5]; %FIXME: get percentage of resident and tourist
 percent_travel_mode_resident = [0.25, 0.25, 0.25, 0.25, 0]; %FIXME: fill them in real numbers. 1. private car, 2. tnc and taxis, 3. comfortable public transit, 4. economic public transit, 5. rental car 
 percent_travel_mode_tourist = [0, 0.25, 0.25, 0.25, 0.25]; %FIXME: fill them in real numbers. 1. private car, 2. tnc and taxis, 3. comfortable public transit, 4. economic public transit, 5. rental car 
 percent_activity_private_car = [1/3, 1/3, 1/3]; %park_at_airport, park_off_airport, curbside, 
@@ -43,14 +54,17 @@ num_travel2 = sum(idx_travel2);
 simulation_all(:,1) = 1:num_all_IDs;
 
 %------------------col2 generate trip purpose: residents or tourists-------
-distribution = modes_distribution_by_percentile(num_all_IDs, percent_trip_purpose);
-simulation_all(:,2) = distribution;
+simulation_all(1:num_residents,2) = 1;
+simulation_all(1+num_residents:end,2) = 2;
 
 %------------------col3 generating origination zip codes-------------------
-%the function generate_zip_codes 
-zipcodes = dlmread('ZipCodes.txt');
-zipcode_by_id = generate_zip_codes(zipcodes, enplanements);
-simulation_all(:,3) = zipcode_by_id;
+zipcode_by_id_resident = generate_zip_codes(zipcodes_resident, enplanements_resident);
+assert(sum(enplanements_resident)==num_residents);% number of residents should equal to the sum in enplanements_resident
+simulation_all(1:num_residents,3) = zipcode_by_id_resident;
+
+zipcode_by_id_tourist = generate_zip_codes(zipcodes_tourist, enplanements_tourist);
+assert(sum(enplanements_tourist)==num_tourist);
+simulation_all(1+num_residents:end,3) = zipcode_by_id_tourist;
     
 %------------------col4 travel modes---------------------------------------
 assert(max(simulation_all(:,2))<=2 && min(simulation_all(:,2))>=1)
