@@ -18,7 +18,12 @@ for i = 1:num
     url = sprintf('https://maps.googleapis.com/maps/api/distancematrix/json?origins=%0.9f,%0.9f&destinations=%0.9f,%0.9f&mode=%s&key=%s',coord(1), coord(2), SFO_coord(1), SFO_coord(2), mode, key);
     str = urlread(url);
     json = jsondecode(str);
-    %find the value of distance in str
+    error = strfind(str, "ZERO_RESULTS"); %no a valid coord
+    if size(error,1) == 1
+        fprintf('Warning! Google API said: the %d origin coordinate does not have valid route to SFO.\n', i);
+        distance_all(i) = 0;
+        continue;
+    end
     distance_all(i) = json.rows.elements.distance.value;
     duration_all(i) = json.rows.elements.duration.value;
 end
