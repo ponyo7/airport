@@ -1,3 +1,4 @@
+function simulation_all = generate_simulation_table()
 %This function create a n*9 simulation table. Each row represents a person.
 
 %function simulation_all = generate_simulation_table(
