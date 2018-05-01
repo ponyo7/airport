@@ -1,4 +1,4 @@
-function simulation_all = generate_simulation_table(av_adoption_rate)
+function simulation_all = generate_simulation_table(av_adoption_rates)
 %zipcodes_enplanement_resident,zipcodes_enplanement_tourist,zipcode_distance,
 %percent_travel_mode_resident,percent_travel_mode_tourist,percent_activity_private_car,percent_activity_rentalcar,percent_parking_mode,
 %st_hourly_mu,st_hourly_sigma,st_daily_mu,st_daily_sigma,lt_daily_mu,lt_daily_sigma,eco_parking_mu,eco_parking_sigma)
@@ -25,8 +25,11 @@ end
 enplanements_all = enplanements_resident + enplanements_tourist;%two zipcode enplanement files have the same zipcode list
 %input distance file by zipcode
 num_zipcode = size(enplanements_all,1); 
-%zipcode_distance = dlmread('Distance.txt'); %1. zipcode, 2. google-map distance
+%zipcode_distance = dlmread('Distance.txt'); %1. zipcode, 2. google-map
+%distance---------------------------------------------------------------------FIXME prepare distance.txt and remove the next line---------------------------------------------------------------------
 zipcode_distance = zeros(num_zipcode, 2) + 10000;
+assert(num_zipcode == size(zipcode_distance,1)); % each row of enplanement and distance should corresponde to the same zipcode
+
 num_all_IDs = sum(enplanements_all, 1);
 num_residents = sum(enplanements_resident, 1);
 num_tourist = sum(enplanements_tourist, 1);
@@ -263,7 +266,7 @@ for i=1:num_all_IDs
     end
     if j == num_zipcode && simulation_all(i, 8) ~= zipcode_distance(j,2) %distance is never assigned
         fprintf('Invalid zipcode: %d\n', zipcode);
-        error('The above zipcode does not have a value from "Distance.txt. Please check" ');
+        %error('The above zipcode does not have a value from "Distance.txt. Please check" ');
     end
 end
 
@@ -271,7 +274,39 @@ end
 for k = 1:num_all_IDs
     if simulation_all(k,4)==1 %private car
         random_number = rand();
-        if random_number <= av_adoption_rate
+        if random_number <= av_adoption_rates(1)
+            simulation_all(k,9) = 1; % this car is AV
+        else
+            simulation_all(k,9) = 0; % this car is not AV
+        end
+    end
+    if simulation_all(k,4)==2 %tnc
+        random_number = rand();
+        if random_number <= av_adoption_rates(2)
+            simulation_all(k,9) = 1; % this car is AV
+        else
+            simulation_all(k,9) = 0; % this car is not AV
+        end
+    end
+    if simulation_all(k,4)==3 %rental car
+        random_number = rand();
+        if random_number <= av_adoption_rates(3)
+            simulation_all(k,9) = 1; % this car is AV
+        else
+            simulation_all(k,9) = 0; % this car is not AV
+        end
+    end
+    if simulation_all(k,4)==4 %comfortable
+        random_number = rand();
+        if random_number <= av_adoption_rates(4)
+            simulation_all(k,9) = 1; % this car is AV
+        else
+            simulation_all(k,9) = 0; % this car is not AV
+        end
+    end
+    if simulation_all(k,4)==5 %economic
+        random_number = rand();
+        if random_number <= av_adoption_rates(5)
             simulation_all(k,9) = 1; % this car is AV
         else
             simulation_all(k,9) = 0; % this car is not AV

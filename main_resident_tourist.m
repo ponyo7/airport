@@ -4,11 +4,11 @@
 % 2. compute revenue for reach person (each row)
 
 clear;
-av_adoption_rate = 0.01;%0:0.05:1;
+av_adoption_rates = [0.01, 0.01, 0.01, 0.01, 0.01];%private car, tnc, rental car, comfortable, economic
 
 %----------------------step1 generate simulation table---------------------
 %1*10, 1: IDs,2: trip purpose 3: zip codes 4: travel modes 5: activity 6: parking mode, 7: parking time 8: distance 9: AV 10: revenue
-simulation_all = generate_simulation_table(av_adoption_rate);
+simulation_all = generate_simulation_table(av_adoption_rates);
 num_rows = size(simulation_all);
 
 %----------------------step2 compute revenue for each row------------------
