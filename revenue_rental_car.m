@@ -1,6 +1,6 @@
 function revenue = revenue_rental_car(simulation_row)
 % @brief revenue from private car parking
-% @param[input]  1*8, 1: IDs,2: trip purpose 3: zip codes 4: travel modes 5: activity 6: parking mode, 7: parking time 8: distance 9: revenue
+% @param[input]  1*10, 1: IDs,2: trip purpose 3: zip codes 4: travel modes 5: activity 6: parking mode 7: parking time 8: distance 9: AV 10: revenue
 % @param[output] revenue
 
 RENTAL_CAR_ON_AIRPORT = 0; % FIXME: fill in real number
