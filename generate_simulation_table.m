@@ -35,10 +35,12 @@ num_residents = sum(enplanements_resident, 1);
 num_tourist = sum(enplanements_tourist, 1);
 
 %All fake numbers for now, FIXME: get real numbers
-percent_travel_mode_resident = [0.25, 0.25, 0.25, 0.25, 0]; %FIXME: fill them in real numbers. 1. private car, 2. tnc and taxis, 3. comfortable public transit, 4. economic public transit, 5. rental car 
-percent_travel_mode_tourist = [0, 0.25, 0.25, 0.25, 0.25]; %FIXME: fill them in real numbers. 1. private car, 2. tnc and taxis, 3. comfortable public transit, 4. economic public transit, 5. rental car 
-percent_activity_private_car = [1/3, 1/3, 1/3]; %park_at_airport, park_off_airport, curbside, 
-percent_activity_rentalcar = [0.5 0.5]; % rentalcar_on_airport, rentalcar_off_airport
+%!!!!!!!!DONT change the order of travel mode!!! have to be consistent with
+%slides!!!!!!!!!!!!!!!!!!!
+percent_travel_mode_resident = [0.25, 0.25, 0, 0.25, 0.25]; %FIXME: fill them in real numbers. 1. private car, 2. tnc and taxis, 3. rental car 4. comfortable public transit, 5. economic public transit 
+percent_travel_mode_tourist = [0, 0.25, 0.25, 0.25, 0.25]; %FIXME: fill them in real numbers. 1. private car, 2. tnc and taxis, 3. rental car 4. comfortable public transit, 5. economic public transit
+percent_activity_private_car = [1/3, 1/3, 1/3, 0, 0]; %park_at_airport, park_off_airport, curbside, 
+percent_activity_rental_car = [0, 0, 0,0.5 0.5]; % rentalcar_on_airport, rentalcar_off_airport
 percent_parking_mode = [0.5 0.2 0.3 0]; %short term hourly, short term daily, long term, economic parking 
 st_hourly_mu = 54/60;
 st_hourly_sigma = 5; %FIXME
@@ -57,7 +59,7 @@ simulation_all = zeros(num_all_IDs, 10);
 % 1: IDs, 
 % 2: trip purpose (resident or tourist) 
 % 3: zip codes (for resident only) 
-% 4: travel modes: 1. private car, 2. tnc and taxis, 3. comfortable public transit, 4. economic public transit, 5. rental car
+% 4: travel modes: 1. private car, 2. tnc and taxis, 3. rental car 4. comfortable public transit, 5. economic public transit 
 % 5: activity: park_at_airport, park_off_airport, curbside, rentalcar_on_airport, rentalcar_off_airport
 % 6: parking mode: short term hourly, short term daily, long term, economic
 % parking
@@ -132,8 +134,7 @@ end
 
 %5.3 rental car
 num_rental_car = sum(simulation_all(:,4)==3);
-distribution_activity_rental_car = modes_distribution_by_percentile(num_rental_car, percent_activity_rentalcar);
-distribution_activity_rental_car = distribution_activity_rental_car + 3; %set to on/off airport, which is 4,5
+distribution_activity_rental_car = modes_distribution_by_percentile(num_rental_car, percent_activity_rental_car);
 j=1;
 for i=1:num_all_IDs
     if simulation_all(i,4)==3 %rental car
