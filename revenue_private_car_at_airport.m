@@ -3,6 +3,17 @@ function revenue = revenue_private_car_at_airport(simulation_row)
 % @param[input]  1*10, 1: IDs,2: trip purpose 3: zip codes 4: travel modes 5: activity 6: parking mode 7: parking time 8: distance 9: AV 10: revenue
 % @param[output] revenue
 
+%cost fee from TPA master plan 2011
+max_per_day_short = 44; % max fee per day for short term parking 2014 22
+max_per_day_long = 36;  % max fee per day for long term parking       18
+max_per_day_econ = 20;   % max fee per day for econ parking            10
+
+fee_per_20min_short = 4; % 2011 1fee per every 20 min 2014  2
+fee_per_20min_long=4;    %      1                           2
+fee_per_20min_econ=2;    %      1                           1
+
+
+
 assert(simulation_row(2)==1 && simulation_row(4)==1 && simulation_row(5)==1); % must be resident and private car
 
 %calculating parking cost
@@ -10,7 +21,7 @@ time = simulation_row(6);
 days = floor(time/24);
 hours = mod(time, 24);
 parking_fee = 0;
-if (simulation_all(6)==1||simulation_all(6)==2) && time>1 %short term
+if (simulation_row(6)==1||simulation_row(6)==2) && time>1 %short term
     fee_days = days*max_per_day_short;
     num_20mins = ceil(hours*3);
     fee_hours = num_20mins*fee_per_20min_short;
@@ -20,7 +31,7 @@ if (simulation_all(6)==1||simulation_all(6)==2) && time>1 %short term
     parking_fee = fee_days+fee_hours;
 end   
 
-if simulation_all(6)==3 && time > 1 % long term
+if simulation_row(6)==3 && time > 1 % long term
     fee_days = days*max_per_day_long;
     num_20mins = ceil(hours*3);
     fee_hours = num_20mins*fee_per_20min_long;
@@ -30,7 +41,7 @@ if simulation_all(6)==3 && time > 1 % long term
     parking_fee = fee_days+fee_hours;
 end
 
-if simulation_all(6)==4                      % economic parking
+if simulation_row(6)==4                      % economic parking
     fee_days = days*max_per_day_econ;
     num_20mins = ceil(hours*3);
     fee_hours = num_20mins*fee_per_20min_econ;
