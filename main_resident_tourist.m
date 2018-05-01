@@ -3,6 +3,7 @@
 % attribute
 % 2. compute revenue for reach person (each row)
 
+clear;
 av_adoption_rate = 0.01;%0:0.05:1;
 
 %----------------------step1 generate simulation table---------------------

@@ -56,16 +56,12 @@ simulation_all = zeros(num_all_IDs, 10);
 % 3: zip codes (for resident only) 
 % 4: travel modes: 1. private car, 2. tnc and taxis, 3. comfortable public transit, 4. economic public transit, 5. rental car
 % 5: activity: park_at_airport, park_off_airport, curbside, rentalcar_on_airport, rentalcar_off_airport
-% 6: parking mode: short term hourly, short term daily, long term 
+% 6: parking mode: short term hourly, short term daily, long term, economic
+% parking
 % 7: parking time: only for park_at_airport or tnc_park_temporary
 % 8: distance: only for resident
 % 9: AV: whether the vehicle is AV or not
 % 10: revenue: revenue from this person
-
-idx_travel1 = (simulation_all(:,2)==1); %resident
-idx_travel2 = (simulation_all(:,2)==2); %tourist
-num_travel1 = sum(idx_travel1);
-num_travel2 = sum(idx_travel2);
 
 %------------------col1 generating IDs-------------------------------------
 simulation_all(:,1) = 1:num_all_IDs;
@@ -73,6 +69,9 @@ simulation_all(:,1) = 1:num_all_IDs;
 %------------------col2 generate trip purpose: residents or tourists-------
 simulation_all(1:num_residents,2) = 1; %make first part of table row resident
 simulation_all(1+num_residents:end,2) = 2; %make the second part of table rows tourist
+
+num_travel_resident = sum(simulation_all(:,2)==1);
+num_travel_tourist = sum(simulation_all(:,2)==2);
 
 %------------------col3 generating origination zip codes-------------------
 zipcode_by_id_resident = generate_zip_codes(zipcodes_resident, enplanements_resident);
@@ -86,54 +85,49 @@ simulation_all(1+num_residents:end,3) = zipcode_by_id_tourist;
 %------------------col4 travel modes---------------------------------------
 assert(max(simulation_all(:,2))<=2 && min(simulation_all(:,2))>=1)
 %4.1)resident
-distribution_travel_mode_resident = modes_distribution_by_percentile(num_travel1, percent_travel_mode_resident);
-distribution = zeros(num_all_IDs,1);
+distribution_travel_mode_resident = modes_distribution_by_percentile(num_travel_resident, percent_travel_mode_resident);
 j=1;
 for i=1:num_all_IDs
-    if simulation_all(:,2)==1
-        distribution(i) = distribution_travel_mode_resident(j); %generate the distribution and assigns a private car
+    if simulation_all(i,2)==1
+        simulation_all(i,4) = distribution_travel_mode_resident(j); %generate the distribution and assigns a private car
         j = j+1;
     end
 end
-simulation_all(:,4) = distribution; %simulation_all(i, 4)
+assert(j-1==length(distribution_travel_mode_resident))
 
 %4.2)tourist
-distribution_travel_mode_tourist = modes_distribution_by_percentile(num_travel2, percent_travel_mode_tourist);
-distribution = zeros(num_all_IDs,1);
+distribution_travel_mode_tourist = modes_distribution_by_percentile(num_travel_tourist, percent_travel_mode_tourist);
 j=1;
 for i=1:num_all_IDs
-    if simulation_all(:,2)==2
-        distribution(i) = distribution_travel_mode_tourist(j); %generate the distribution and assigns a private car
+    if simulation_all(i,2)==2
+        simulation_all(i,4) = distribution_travel_mode_tourist(j); %generate the distribution and assigns a private car
         j = j+1;
     end
 end
-simulation_all(:,4) = distribution; %simulation_all(i, 4)
+assert(j-1==length(distribution_travel_mode_tourist))
 
 %------------------col5 travel activity------------------------------------
 %5.1)activity for private car
-distribution_activity_private_car = modes_distribution_by_percentile(num_travel1, percent_activity_private_car);
-distribution = zeros(num_all_IDs,1);
-j=1;
-for i=1:num_all_IDs
-    if simulation_all(:,4)==1
-        distribution(i) = distribution_activity_private_car(j); %generate the distribution and assigns a private car
-        j = j+1;
-    end
-end
-simulation_all(:,5) = distribution; %simulation_all(i, 5)
-
-
-%------------------col6 parking mode---------------------------------------
-%for park_at_ariport only, which means only for private car 
-%copy and modify it from main_method1_*
-%make it a function, so you can just call it to simply things
-%1. parking time--short term hourly
-
-distribution_parking_mode = modes_distribution_by_percentile(num_travel1, percent_parking_mode);
+distribution_activity_private_car = modes_distribution_by_percentile(num_travel_resident, percent_activity_private_car);
 distribution = zeros(num_all_IDs,1);
 j=1;
 for i=1:num_all_IDs
     if simulation_all(i,4)==1
+        distribution(i) = distribution_activity_private_car(j); %generate the distribution and assigns a private car
+        j = j+1;
+    end
+end
+simulation_all(:,5) = distribution;
+
+
+%------------------col6 parking mode---------------------------------------
+%for park_at_ariport only, which means only for private car 
+%FIXME: make it a function, so you can just call it to simply things
+distribution_parking_mode = modes_distribution_by_percentile(num_travel_resident, percent_parking_mode);
+distribution = zeros(num_all_IDs,1);
+j=1;
+for i=1:num_all_IDs
+    if simulation_all(i,4)==1 %private car
         distribution(i) = distribution_parking_mode(j);
         j = j+1;
     end
@@ -145,7 +139,7 @@ simulation_all(:,6) = distribution;
 %for park_at_ariport only, which means only for private car 
 %copy and modify it from main_method1_*
 %make it a function, so you can just call it to simply things
-%1. parking time--short term hourly
+%7.1). parking time--short term hourly
 % X = 6;
 % area = 0.87;
 % Z = norminv(area);
@@ -175,7 +169,7 @@ idx = val>0;
 figure(1);
 hist(histogram1);
 
-%2. parking time--short term daily
+%7.2). parking time--short term daily
 % X = 8;
 % area = 0.01;
 % Z = norminv(area);
@@ -200,7 +194,7 @@ idx = val>0;
 figure(2);
 hist(histogram2);
 
-%3.parking time--long term 
+%7.3).parking time--long term 
 histogram3 = zeros(num_parking_mode3,1);
 k3 = 1;
 for i=1:num_all_IDs
@@ -221,7 +215,7 @@ idx = val>0;
 figure(3);
 hist(histogram3);
 
-%4.parking time--economic parking 
+%7.4).parking time--economic parking 
 histogram4 = zeros(num_parking_mode4,1);
 k4 = 1;
 for i=1:num_all_IDs
