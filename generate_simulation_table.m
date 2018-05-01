@@ -1,17 +1,13 @@
-function simulation_all = generate_simulation_table()
-%This function create a n*9 simulation table. Each row represents a person.
-
-%function simulation_all = generate_simulation_table(
+function simulation_all = generate_simulation_table(av_adoption_rate)
 %zipcodes_enplanement_resident,zipcodes_enplanement_tourist,zipcode_distance,
 %percent_travel_mode_resident,percent_travel_mode_tourist,percent_activity_private_car,percent_activity_rentalcar,percent_parking_mode,
 %st_hourly_mu,st_hourly_sigma,st_daily_mu,st_daily_sigma,lt_daily_mu,lt_daily_sigma,eco_parking_mu,eco_parking_sigma)
-
+%This function create a n*9 simulation table. Each row represents a person.
 
 % Please refer to the comments for what each col represent
 %
 %TODO: pull all constants and input here
 
-clear;
 %--------------------input prepare-----------------------------------------
 %input enplamenets zipcode file by resident and tourist, keep the files have same zipcode list
 zipcodes_enplanement_resident = dlmread('zipcode_enplanement_resident.txt');%nx2 zipcode, enplanements
@@ -21,26 +17,24 @@ zipcodes_tourist = zipcodes_enplanement_tourist(:,2);
 enplanements_resident = zipcodes_enplanement_resident(:,2); %numbers must be positive or 0
 enplanements_tourist = zipcodes_enplanement_tourist(:,2); %enplanemnts must have same # of rows
 assert(size(enplanements_resident, 1)==size(enplanements_tourist,1))
-idx0 = enplanements_residnet < 0 ;
+idx0 = enplanements_resident < 0 ;
 idx1 = enplanements_tourist < 0 ;
 if sum(idx0)>=1 || sum(idx1)>=1
     error('Error! Negtive enplanement number detected! Please check the excel file\n');
 end
-enplanements_all = enplanements_resident + enplanements_tourist;
+enplanements_all = enplanements_resident + enplanements_tourist;%two zipcode enplanement files have the same zipcode list
 %input distance file by zipcode
-num_zipcode = sum(zipcodes_enplanement_resident,1); %two zipcode enplanement files have the same zipcode list
-zipcode_distance = zeros(num_zipcode,2); %1. zipcode, 2. google-map distance
-zipcode_distance = dlmread('zipcode_distance.txt');
-num_all_IDs = sum(enplanements_all);
+num_zipcode = size(enplanements_all,1); 
+%zipcode_distance = dlmread('Distance.txt'); %1. zipcode, 2. google-map distance
+zipcode_distance = zeros(num_zipcode, 2) + 10000;
+num_all_IDs = sum(enplanements_all, 1);
 num_residents = sum(enplanements_resident, 1);
 num_tourist = sum(enplanements_tourist, 1);
 
 %All fake numbers for now, FIXME: get real numbers
-%percent_trip_purpose = [0.5, 0.5]; %FIXME: get percentage of resident and tourist
 percent_travel_mode_resident = [0.25, 0.25, 0.25, 0.25, 0]; %FIXME: fill them in real numbers. 1. private car, 2. tnc and taxis, 3. comfortable public transit, 4. economic public transit, 5. rental car 
 percent_travel_mode_tourist = [0, 0.25, 0.25, 0.25, 0.25]; %FIXME: fill them in real numbers. 1. private car, 2. tnc and taxis, 3. comfortable public transit, 4. economic public transit, 5. rental car 
 percent_activity_private_car = [1/3, 1/3, 1/3]; %park_at_airport, park_off_airport, curbside, 
-%percent_activity_tnc = [0.5, 0.5]; %curbside, park_temporary
 percent_activity_rentalcar = [0.5 0.5]; % rentalcar_on_airport, rentalcar_off_airport
 percent_parking_mode = [0.5 0.2 0.3 0]; %short term hourly, short term daily, long term, economic parking 
 st_hourly_mu = 54/60;
@@ -51,11 +45,12 @@ lt_daily_mu = 54/60;
 lt_daily_sigma = 5; %FIXME
 eco_parking_mu = 54/60;
 eco_parking_sigma = 5; %FIXME
+%av_adoption_rate = 0.1; %FIXME
 
 %------------------create simulation_all table-----------------------------
 
 %contains all information for each ID
-simulation_all = zeros(num_all_IDs, 9);
+simulation_all = zeros(num_all_IDs, 10);
 % 1: IDs, 
 % 2: trip purpose (resident or tourist) 
 % 3: zip codes (for resident only) 
@@ -64,7 +59,8 @@ simulation_all = zeros(num_all_IDs, 9);
 % 6: parking mode: short term hourly, short term daily, long term 
 % 7: parking time: only for park_at_airport or tnc_park_temporary
 % 8: distance: only for resident
-% 9: revenue: revenue from this person
+% 9: AV: whether the vehicle is AV or not
+% 10: revenue: revenue from this person
 
 idx_travel1 = (simulation_all(:,2)==1); %resident
 idx_travel2 = (simulation_all(:,2)==2); %tourist
@@ -223,7 +219,7 @@ end
 val = simulation_all(:,7);
 idx = val>0;
 figure(3);
-hist(histogra3);
+hist(histogram3);
 
 %4.parking time--economic parking 
 histogram4 = zeros(num_parking_mode4,1);
@@ -250,27 +246,33 @@ hist(histogram4);
 %------------------col8 distance-------------------------------------------
 %copy and modify it from main_method1_*
 %distance by zip code
-num_zipcode = size(distance,1);
 for i=1:num_all_IDs
     zipcode = simulation_all(i,3);
     j=1; 
     while j<num_zipcode
-        if zipcode == distance(j,1)
-            simulation_all(i, 8) = distance (j,2);
+        if zipcode == zipcode_distance(j,1)
+            simulation_all(i, 8) = zipcode_distance(j,2);
             break;
         end
         j=j+1;
     end
-    if j == num_zipcode && simulation_all(i, 8) ~= distance (j,2) %distance is never assigned
+    if j == num_zipcode && simulation_all(i, 8) ~= zipcode_distance(j,2) %distance is never assigned
         fprintf('Invalid zipcode: %d\n', zipcode);
         error('The above zipcode does not have a value from "Distance.txt. Please check" ');
     end
 end
 
-%------------------col9 revenue-------------------------------------------
-% parking_revenue 
-% curbside_revenue
-% rentalcar_revenue
+%------------------col9 AV-------------------------------------------------
+for k = 1:num_all_IDs
+    if simulation_all(k,4)==1 %private car
+        random_number = rand();
+        if random_number <= av_adoption_rate
+            simulation_all(k,9) = 1; % this car is AV
+        else
+            simulation_all(k,9) = 0; % this car is not AV
+        end
+    end
+end
 
 
 
