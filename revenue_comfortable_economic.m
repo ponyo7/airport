@@ -9,10 +9,12 @@ ECONOMIC_GROUND_TRANSPORTATION = 0; %FIXME: fill in real cost
 assert(simulation_row(4)==4 || simulation_row(4)==5); %travel mode has to be tnc
 
 revenue = 0;
-if simulation_row(2) == 4
-    revenue = COMFORTABLE_GROUND_TRANSPORTATION;
-end
+if  simulation_row(9)==0 % if not AV
+    if simulation_row(2) == 4
+        revenue = COMFORTABLE_GROUND_TRANSPORTATION;
+    end
 
-if simulation_row(2) == 5
-    revenue = ECONOMIC_GROUND_TRANSPORTATION;
+    if simulation_row(2) == 5
+        revenue = ECONOMIC_GROUND_TRANSPORTATION;
+    end
 end

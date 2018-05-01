@@ -9,10 +9,12 @@ CURBSIDE_PER_TRIP_CHARGE_ROURIST = 0; %FIXME: fill in real cost
 assert(simulation_row(4)==2); %travel mode has to be tnc
 
 revenue = 0;
-if simulation_row(2) == 1
-    revenue = CURBSIDE_PER_TRIP_CHARGE_RESIDENT;
-end
+if  simulation_row(9)==0 % if not AV
+    if simulation_row(2) == 1
+        revenue = CURBSIDE_PER_TRIP_CHARGE_RESIDENT;
+    end
 
-if simulation_row(2) == 2
-    revenue = CURBSIDE_PER_TRIP_CHARGE_ROURIST;
+    if simulation_row(2) == 2
+        revenue = CURBSIDE_PER_TRIP_CHARGE_ROURIST;
+    end
 end

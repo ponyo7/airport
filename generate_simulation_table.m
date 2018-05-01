@@ -65,7 +65,7 @@ simulation_all = zeros(num_all_IDs, 10);
 % parking
 % 7: parking time: only for park_at_airport or tnc_park_temporary
 % 8: distance: only for resident
-% 9: AV: whether the vehicle is AV or not
+% 9: AV: whether the vehicle is AV or not, 1 AV, 0 not AV
 % 10: revenue: revenue from this person
 
 %------------------col1 generating IDs-------------------------------------

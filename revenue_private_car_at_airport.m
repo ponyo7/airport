@@ -21,34 +21,36 @@ time = simulation_row(6);
 days = floor(time/24);
 hours = mod(time, 24);
 parking_fee = 0;
-if (simulation_row(6)==1||simulation_row(6)==2) && time>1 %short term
-    fee_days = days*max_per_day_short;
-    num_20mins = ceil(hours*3);
-    fee_hours = num_20mins*fee_per_20min_short;
-    if  fee_hours > max_per_day_short
-        fee_hours = max_per_day_short;
-    end
-    parking_fee = fee_days+fee_hours;
-end   
+if  simulation_row(9)==0 % if not AV
+    if (simulation_row(6)==1||simulation_row(6)==2) && time>1 %short term and not AV
+        fee_days = days*max_per_day_short;
+        num_20mins = ceil(hours*3);
+        fee_hours = num_20mins*fee_per_20min_short;
+        if  fee_hours > max_per_day_short
+            fee_hours = max_per_day_short;
+        end
+        parking_fee = fee_days+fee_hours;
+    end   
 
-if simulation_row(6)==3 && time > 1 % long term
-    fee_days = days*max_per_day_long;
-    num_20mins = ceil(hours*3);
-    fee_hours = num_20mins*fee_per_20min_long;
-    if  fee_hours > max_per_day_long
-        fee_hours = max_per_day_long;
+    if simulation_row(6)==3 && time > 1%long term and not AV
+        fee_days = days*max_per_day_long;
+        num_20mins = ceil(hours*3);
+        fee_hours = num_20mins*fee_per_20min_long;
+        if  fee_hours > max_per_day_long
+            fee_hours = max_per_day_long;
+        end
+        parking_fee = fee_days+fee_hours;
     end
-    parking_fee = fee_days+fee_hours;
-end
 
-if simulation_row(6)==4                      % economic parking
-    fee_days = days*max_per_day_econ;
-    num_20mins = ceil(hours*3);
-    fee_hours = num_20mins*fee_per_20min_econ;
-    if  fee_hours > max_per_day_econ
-        fee_hours = max_per_day_econ;
+    if simulation_row(6)==4 %economic parking and not AV
+        fee_days = days*max_per_day_econ;
+        num_20mins = ceil(hours*3);
+        fee_hours = num_20mins*fee_per_20min_econ;
+        if  fee_hours > max_per_day_econ
+            fee_hours = max_per_day_econ;
+        end
+        parking_fee = fee_days+fee_hours;
     end
-    parking_fee = fee_days+fee_hours;
 end
 
 revenue = parking_fee;

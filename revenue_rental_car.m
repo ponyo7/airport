@@ -9,10 +9,12 @@ RENTAL_CAR_OFF_AIRPORT = 0; % FIXME: fill in real number
 assert(simulation_row(2)==2 && simulation_row(4)==3); % must be tourist with rental car
 
 revenue = 0;
-if simulation_row(5)==4
-    revenue = RENTAL_CAR_ON_AIRPORT;
-end
+if  simulation_row(9)==0 % if not AV
+    if simulation_row(5)==4
+        revenue = RENTAL_CAR_ON_AIRPORT;
+    end
 
-if simulation_row(5)==5
-    revenue = RENTAL_CAR_OFF_AIRPORT;
+    if simulation_row(5)==5
+        revenue = RENTAL_CAR_OFF_AIRPORT;
+    end
 end
