@@ -100,7 +100,7 @@ distribution_travel_mode_tourist = modes_distribution_by_percentile(num_travel_t
 j=1;
 for i=1:num_all_IDs
     if simulation_all(i,2)==2
-        simulation_all(i,4) = distribution_travel_mode_tourist(j); %generate the distribution and assigns a private car
+        simulation_all(i,4) = distribution_travel_mode_tourist(j); %assign the travel mode
         j = j+1;
     end
 end
@@ -108,32 +108,51 @@ assert(j-1==length(distribution_travel_mode_tourist))
 
 %------------------col5 travel activity------------------------------------
 %5.1)activity for private car
-distribution_activity_private_car = modes_distribution_by_percentile(num_travel_resident, percent_activity_private_car);
-distribution = zeros(num_all_IDs,1);
+num_private_car = sum(simulation_all(:,4)==1);
+distribution_activity_private_car = modes_distribution_by_percentile(num_private_car, percent_activity_private_car);
 j=1;
 for i=1:num_all_IDs
     if simulation_all(i,4)==1
-        distribution(i) = distribution_activity_private_car(j); %generate the distribution and assigns a private car
+        simulation_all(i,5) = distribution_activity_private_car(j);
         j = j+1;
     end
 end
-simulation_all(:,5) = distribution;
+assert(j-1==length(distribution_activity_private_car))
 
+%5.2) tnc activity: curbside only
+for i=1:num_all_IDs
+    if simulation_all(i,4)==2 %TNC
+        simulation_all(i,5) = 3;
+        j = j+1;
+    end
+end
 
-%------------------col6 parking mode---------------------------------------
-%for park_at_ariport only, which means only for private car 
-%FIXME: make it a function, so you can just call it to simply things
-distribution_parking_mode = modes_distribution_by_percentile(num_travel_resident, percent_parking_mode);
-distribution = zeros(num_all_IDs,1);
+%5.3 rental car
+num_rental_car = sum(simulation_all(:,4)==3);
+distribution_activity_rental_car = modes_distribution_by_percentile(num_rental_car, percent_activity_rentalcar);
+distribution_activity_rental_car = distribution_activity_rental_car + 3; %set to on/off airport, which is 4,5
 j=1;
 for i=1:num_all_IDs
-    if simulation_all(i,4)==1 %private car
-        distribution(i) = distribution_parking_mode(j);
+    if simulation_all(i,4)==3 %rental car
+        simulation_all(i,5) = distribution_activity_rental_car(j);
         j = j+1;
     end
 end
-%distribution(idx_travel1) = distribution_private_parking;
-simulation_all(:,6) = distribution;
+assert(j-1==length(distribution_activity_rental_car))
+
+%------------------col6 parking mode---------------------------------------
+%for activity = park_at_ariport only (private car of course )
+%FIXME: make it a function, so you can just call it to simply things
+num_park_at_airport = sum(simulation_all(:,5)==1); % park at airport
+distribution_parking_mode = modes_distribution_by_percentile(num_park_at_airport, percent_parking_mode);
+j=1;
+for i=1:num_all_IDs
+    if simulation_all(i,5)==1 %park at airport
+        simulation_all(i, 6) = distribution_parking_mode(j);
+        j = j+1;
+    end
+end
+assert(j-1==length(distribution_parking_mode))
 
 %------------------col7 parking time---------------------------------------
 %for park_at_ariport only, which means only for private car 
@@ -143,10 +162,10 @@ simulation_all(:,6) = distribution;
 % X = 6;
 % area = 0.87;
 % Z = norminv(area);
-num_parking_mode1 = sum(simulation_all(i,6) ==1);
-num_parking_mode2 = sum(simulation_all(i,6) ==2);
-num_parking_mode3 = sum(simulation_all(i,6) ==3);
-num_parking_mode4 = sum(simulation_all(i,6) ==4);
+num_parking_mode1 = sum(simulation_all(:,6) ==1);
+num_parking_mode2 = sum(simulation_all(:,6) ==2);
+num_parking_mode3 = sum(simulation_all(:,6) ==3);
+num_parking_mode4 = sum(simulation_all(:,6) ==4);
 
 
 histogram1 = zeros(num_parking_mode1,1);
@@ -154,7 +173,7 @@ k1 = 1;
 for i=1:num_all_IDs
     if( simulation_all(i,6) ==1) %short term hourly
         while 1
-            time = normrnd(st_hourly_mu, st_daily_sigma);
+            time = normrnd(st_hourly_mu, st_hourly_sigma);
             if(time>0)
                 simulation_all(i,7) = time;
                 histogram1(k1) = time;
@@ -164,8 +183,6 @@ for i=1:num_all_IDs
         end
     end
 end
-val = simulation_all(:,7);
-idx = val>0;
 figure(1);
 hist(histogram1);
 
@@ -189,8 +206,6 @@ for i=1:num_all_IDs
         end
     end
 end
-val = simulation_all(:,7);
-idx = val>0;
 figure(2);
 hist(histogram2);
 
@@ -200,18 +215,16 @@ k3 = 1;
 for i=1:num_all_IDs
     if( simulation_all(i,6) ==3)
         while 1
-            time = normrnd(lt_parking_mu, lt_parking_sigma);
+            time = normrnd(lt_daily_mu, lt_daily_sigma);
             if(time>0)
                 simulation_all(i,7) = time;
-                histogram2(k3) = time;
+                histogram3(k3) = time;
                 k3 = k3+1;
                 break;
             end
         end
     end
 end
-val = simulation_all(:,7);
-idx = val>0;
 figure(3);
 hist(histogram3);
 
@@ -224,15 +237,13 @@ for i=1:num_all_IDs
             time = normrnd(eco_parking_mu, eco_parking_sigma);
             if(time>0)
                 simulation_all(i,7) = time;
-                histogram2(k4) = time;
+                histogram4(k4) = time;
                 k4 = k4+1;
                 break;
             end
         end
     end
 end
-val = simulation_all(:,7);
-idx = val>0;
 figure(4);
 hist(histogram4);
 
