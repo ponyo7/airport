@@ -4,7 +4,7 @@
 TPA_coord = [27.9756,-82.5333];
 SFO_coord = [37.6213,-122.3790]; 
 mode='driving';
-key = 'AIzaSyDN1Sy8sdzp4nwAClwSjq3gSBoeqO_Nxz0';
+key = 'AIzaSyACilNIuE59lDVDl-iggsA0BI7TP5pcD0A';
 
 file_name = 'SFO_OriginCoordinates.txt';
 orig_coord_all = dlmread(file_name);
@@ -29,6 +29,11 @@ for i = 1:num
 end
 distance_all
 duration_all
+
+dlmwrite('distance.csv',distance_all,'delimiter','\t');
+dlmwrite('duration.csv',duration_all,'delimiter','\t');
+
+
 
 
 
