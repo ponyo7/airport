@@ -17,7 +17,7 @@ for i=1:num_adoption
     for j = 1:num_rows
         row = simulation_all(j, :);
         revenue = 0;
-        if(row(4)==1) % private car
+        if(row(2)==1&&row(4)==1) % resident private car
             revenue = revenue_private_car(row);
         end
         if(row(4)==2) % tnc
@@ -33,3 +33,6 @@ for i=1:num_adoption
     end
 
 end
+
+
+
