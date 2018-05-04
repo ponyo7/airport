@@ -3,7 +3,7 @@ function revenue = revenue_private_car(simulation_row)
 % @param[input]  1*10, 1: IDs,2: trip purpose 3: zip codes 4: travel modes 5: activity 6: parking mode 7: parking time 8: distance 9: AV 10: revenue
 % @param[output] revenue
 %
-CURB_PER_TRIP_CHARGE = 0; % FIXME: fill in real number from airport
+CURB_PER_TRIP_CHARGE = 0; % current no charge
 
 assert(simulation_row(2)==1 && simulation_row(4)==1); % must be resident and private car
 
@@ -11,7 +11,7 @@ revenue = 0;
 if  simulation_row(9)==0 % if not AV
 %---------------------------park off airport-------------------------------
     if simulation_row(5)==2
-        revenue = 0;
+        revenue = CURB_PER_TRIP_CHARGE;
     end
 
 %---------------------------curbside---------------------------------------
