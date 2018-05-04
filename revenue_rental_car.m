@@ -3,8 +3,8 @@ function revenue = revenue_rental_car(simulation_row)
 % @param[input]  1*10, 1: IDs,2: trip purpose 3: zip codes 4: travel modes 5: activity 6: parking mode 7: parking time 8: distance 9: AV 10: revenue
 % @param[output] revenue
 
-RENTAL_CAR_ON_AIRPORT = 0; % FIXME: fill in real number
-RENTAL_CAR_OFF_AIRPORT = 0; % FIXME: fill in real number
+RENTAL_CAR_ON_AIRPORT = 25.84; % Average in may 2017
+RENTAL_CAR_OFF_AIRPORT = 27.32; % Average in may 2017
 
 assert(simulation_row(2)==2 && simulation_row(4)==3); % must be tourist with rental car
 
