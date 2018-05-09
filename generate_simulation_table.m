@@ -50,7 +50,7 @@ eco_parking_sigma = 5; %FIXME
 %------------------create simulation_all table-----------------------------
 
 %contains all information for each ID
-simulation_all = zeros(num_all_IDs, 11);
+simulation_all = zeros(num_all_IDs, 10);
 % 1: IDs, 
 % 2: trip purpose (resident or tourist) 
 % 3: zip codes (for resident only) 
@@ -62,8 +62,6 @@ simulation_all = zeros(num_all_IDs, 11);
 % 8: distance: only for resident
 % 9: AV: whether the vehicle is AV or not, 1 AV, 0 not AV
 % 10: revenue: revenue from this person
-% 11: cost for that person to airport
-% 12: round trip fuel cost
 
 
 %------------------col1 generating IDs-------------------------------------
