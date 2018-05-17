@@ -58,7 +58,7 @@ simulation_all = zeros(num_all_IDs, 10);
 % 5: activity: park_at_airport, park_off_airport, curbside, rentalcar_on_airport, rentalcar_off_airport
 % 6: parking mode: short term hourly, short term daily, long term, economic
 % parking
-% 7: parking time: only for park_at_airport or tnc_park_temporary
+% 7: parking time: only for park_at_airport, park_off_airport or tnc_park_temporary
 % 8: distance: only for resident
 % 9: AV: whether the vehicle is AV or not, 1 AV, 0 not AV
 % 10: revenue: revenue from this person
@@ -167,7 +167,7 @@ for i=1:num_all_IDs
 end
 assert(j-1==length(distribution_parking_mode))
 
-%------------------col7 parking time---------------------------------------
+%------------------col7 parking time at airport----------------------------
 %for park_at_ariport only, which means only for private car 
 %copy and modify it from main_method1_*
 %make it a function, so you can just call it to simply things
@@ -260,6 +260,22 @@ end
 figure(4);
 hist(histogram4);
 
+%------------------col7 parking time off airport---------------------------
+%assume only long term parking passenger will choose off airport parking,
+%so this follows the distribution of long term parking
+k5 = 1;
+for i=1:num_all_IDs
+    if( simulation_all(i,5) ==2)
+        while 1
+            time = normrnd(lt_daily_mu, lt_daily_sigma);
+            if(time>0)
+                simulation_all(i,7) = time;
+                k5 = k5+1;
+                break;
+            end
+        end
+    end
+end
 
 %------------------col8 distance-------------------------------------------
 %copy and modify it from main_method1_*
