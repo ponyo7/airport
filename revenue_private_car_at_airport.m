@@ -13,7 +13,6 @@ fee_per_20min_long=4;    %      1                           2
 fee_per_20min_econ=2;    %      1                           1
 
 
-
 assert(simulation_row(2)==1 && simulation_row(4)==1 && simulation_row(5)==1); % must be resident and private car
 
 %calculating parking cost
