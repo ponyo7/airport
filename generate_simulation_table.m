@@ -187,7 +187,7 @@ k1 = 1;
 for i=1:num_all_IDs
     if( simulation_all(i,6) ==1) %short term hourly
         while 1
-            time = normrnd(st_hourly_mu, st_hourly_sigma);
+            time = parking_duration_from_histogram(simulation_all(i,6));
             if(time>0)
                 simulation_all(i,7) = time;
                 histogram1(k1) = time;
@@ -212,7 +212,7 @@ k2 = 1;
 for i=1:num_all_IDs
     if( simulation_all(i,6) ==2)
         while 1
-            time = normrnd(st_daily_mu, st_daily_sigma);
+            time = parking_duration_from_histogram(simulation_all(i,6));
             if(time>0)
                 simulation_all(i,7) = time;
                 histogram2(k2) = time;
@@ -233,7 +233,7 @@ k3 = 1;
 for i=1:num_all_IDs
     if( simulation_all(i,6) ==3)
         while 1
-            time = normrnd(lt_daily_mu, lt_daily_sigma);
+            time = parking_duration_from_histogram(simulation_all(i,6));
             if(time>0)
                 simulation_all(i,7) = time;
                 histogram3(k3) = time;
