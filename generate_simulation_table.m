@@ -32,8 +32,8 @@ num_tourist = sum(enplanements_tourist, 1);
 %input parameters related to travel modes
 percent_travel_mode_resident = [0.49, 0.33, 0, 0.08, 0.10]; %SFO data from survey, 1. private car, 2. tnc and taxis, 3. rental car 4. comfortable public transit, 5. economic public transit 
 percent_travel_mode_tourist = [0.27, 0.34, 0.19, 0.11, 0.09]; %%SFO data from survey, 1. private car, 2. tnc and taxis, 3. rental car 4. comfortable public transit, 5. economic public transit
-percent_activity_private_car = [0.12, 0.08, 0.8]; %park_at_airport, park_off_airport, curbside 
-percent_activity_rental_car = [0.935, 0.065]; % rentalcar_on_airport, rentalcar_off_airport
+percent_activity_private_car = [0.12, 0.08, 0.8,0,0]; %park_at_airport, park_off_airport, curbside 
+percent_activity_rental_car = [0,0,0,0.935, 0.065]; %0,0,0 rentalcar_on_airport, rentalcar_off_airport
 percent_parking_mode = [0.95 0.032 0.018 0]; %short term hourly, short term daily, long term, economic parking 
 %input parameters of parking duration distribution, short term hourly,
 %short tem daily, long term and economic parking in minutes
@@ -173,9 +173,6 @@ assert(j-1==length(distribution_parking_mode))
 %copy and modify it from main_method1_*
 %make it a function, so you can just call it to simply things
 %7.1). parking time--short term hourly
-% X = 6;
-% area = 0.87;
-% Z = norminv(area);
 num_parking_mode1 = sum(simulation_all(:,6) ==1);
 num_parking_mode2 = sum(simulation_all(:,6) ==2);
 num_parking_mode3 = sum(simulation_all(:,6) ==3);
@@ -184,10 +181,11 @@ num_parking_mode4 = sum(simulation_all(:,6) ==4);
 
 histogram1 = zeros(num_parking_mode1,1);
 k1 = 1;
+[intervals1, bin_limits1, bin_width1] = interval_from_histogram('SFO_short_term_hourly.txt');
 for i=1:num_all_IDs
     if( simulation_all(i,6) ==1) %short term hourly
         while 1
-            time = parking_duration_from_histogram(simulation_all(i,6));
+            time = duration_from_intervals(intervals1, bin_limits1(1), bin_width1);
             if(time>0)
                 simulation_all(i,7) = time;
                 histogram1(k1) = time;
@@ -203,16 +201,14 @@ if flag_plot
 end
 
 %7.2). parking time--short term daily
-% X = 8;
-% area = 0.01;
-% Z = norminv(area);
 
 histogram2 = zeros(num_parking_mode2,1);
 k2 = 1;
+[intervals2, bin_limits2, bin_width2] = interval_from_histogram('SFO_short_term_daily.txt');
 for i=1:num_all_IDs
     if( simulation_all(i,6) ==2)
         while 1
-            time = parking_duration_from_histogram(simulation_all(i,6));
+            time = duration_from_intervals(intervals2, bin_limits2(1), bin_width2);
             if(time>0)
                 simulation_all(i,7) = time;
                 histogram2(k2) = time;
@@ -230,10 +226,11 @@ end
 %7.3).parking time--long term 
 histogram3 = zeros(num_parking_mode3,1);
 k3 = 1;
+[intervals3, bin_limits3, bin_width3] = interval_from_histogram('SFO_long_term.txt');
 for i=1:num_all_IDs
     if( simulation_all(i,6) ==3)
         while 1
-            time = parking_duration_from_histogram(simulation_all(i,6));
+            time = duration_from_intervals(intervals3, bin_limits3(1), bin_width3);
             if(time>0)
                 simulation_all(i,7) = time;
                 histogram3(k3) = time;

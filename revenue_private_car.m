@@ -43,10 +43,10 @@ if  simulation_row(9)==1 % if is AV
         cost_curbside = CURB_PER_TRIP_CHARGE + cost_fuel; %fuel
         %minumum cost and corresponding activity
         [~,idx] = min([cost_at_airport cost_off_airport cost_curbside]);
-        if idx ==1 %still part at air port
+        if idx ==1 %still park at air port
             revenue = revenue_private_car_at_airport(simulation_row);
         elseif idx == 2
-            %part at airport=>part off airport
+            %park at airport=>part off airport
             revenue = off_airport_parking_shuttle_per_trip + off_airport_concession;
         else
             %park at airport => curbside
