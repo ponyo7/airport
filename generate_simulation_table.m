@@ -6,6 +6,7 @@ function simulation_all = generate_simulation_table(av_adoption_rates)
 
 %--------------------input prepare-----------------------------------------
 %input enplamenets zipcode file by resident and tourist, keep the files have same zipcode list
+flag_plot = false;
 zipcodes_enplanement_resident = dlmread('SFO_zipcode_enplanement_resident.txt');%nx2 zipcode, enplanements
 zipcodes_enplanement_tourist = dlmread('SFO_zipcode_enplanement_tourist.txt');%nx2 zipcode, enplanements
 zipcodes_resident = zipcodes_enplanement_resident(:,1);
@@ -196,8 +197,10 @@ for i=1:num_all_IDs
         end
     end
 end
-figure(1);
-hist(histogram1);
+if flag_plot
+    figure(1);
+    hist(histogram1);
+end
 
 %7.2). parking time--short term daily
 % X = 8;
@@ -219,8 +222,10 @@ for i=1:num_all_IDs
         end
     end
 end
-figure(2);
-hist(histogram2);
+if flag_plot
+    figure(2);
+    hist(histogram2);
+end
 
 %7.3).parking time--long term 
 histogram3 = zeros(num_parking_mode3,1);
@@ -238,8 +243,10 @@ for i=1:num_all_IDs
         end
     end
 end
-figure(3);
-hist(histogram3);
+if flag_plot
+    figure(3);
+    hist(histogram3);
+end
 
 %7.4).parking time--economic parking 
 histogram4 = zeros(num_parking_mode4,1);
@@ -257,8 +264,10 @@ for i=1:num_all_IDs
         end
     end
 end
-figure(4);
-hist(histogram4);
+if flag_plot
+    figure(4);
+    hist(histogram4);
+end
 
 %------------------col7 parking time off airport---------------------------
 %assume only long term parking passenger will choose off airport parking,
