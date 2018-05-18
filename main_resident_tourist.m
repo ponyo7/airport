@@ -4,13 +4,17 @@
 % 2. compute revenue for reach person (each row)
 
 clear;
-delta = 0.2;
-av_adoption_rates = [0:delta:1; 0:delta:1; 0:delta:1; 0:delta:1; 0:delta:1]';%20*5: each row represent 5 adoption rate respectively for: private car, tnc, rental car, comfortable, economic
+delta = 0.25;
+av_adoption_rates = [0:delta:0.5; 0:delta:0.5; 0:delta:0.5; 0:delta:0.5; 0:delta:0.5]';%20*5: each row represent 5 adoption rate respectively for: private car, tnc, rental car, comfortable, economic
 num_adoption = size(av_adoption_rates, 1);
 
+revenue_all_private_car = [];
+revenue_all_tnc = [];
+revenue_all = [];
 for i=1:num_adoption
 %----------------------step1 generate simulation table---------------------
 %1*10, 1: IDs,2: trip purpose 3: zip codes 4: travel modes 5: activity 6: parking mode, 7: parking time 8: distance 9: AV 10: revenue
+    fprintf("iteration: %d/%d\n", i,num_adoption);
     simulation_all = generate_simulation_table(av_adoption_rates(i, :));
     num_rows = size(simulation_all,1);
     
@@ -33,11 +37,35 @@ for i=1:num_adoption
         simulation_all(j,10) = revenue;
     end
     
+    %private car
+    idx_private_car = (simulation_all(:,4)==1);
+    sum_revenue_private_car = sum(simulation_all(idx_private_car, 10));
+    revenue_all_private_car(i, 1) = av_adoption_rates(i, 1);
+    revenue_all_private_car(i, 2) = sum_revenue_private_car;
+    
+    %tnc
+    idx_tnc = (simulation_all(:,4)==2);
+    sum_revenue_tnc = sum(simulation_all(idx_tnc, 10));
+    revenue_all_tnc(i, 1) = av_adoption_rates(i, 2);
+    revenue_all_tnc(i, 2) = sum_revenue_tnc;
+    
+    %all
+    sum_revenue = sum(simulation_all(:,10));
+    revenue_all(i, 1) = av_adoption_rates(i, 1);
+    revenue_all(i, 2) = sum_revenue;
 end
 
+%-----draw graph of revenue with AV emgering with current situatin---------
+figure(5);
+hold on;
+plot(revenue_all_private_car(:,1), revenue_all_private_car(:,2), '-*r');
+plot(revenue_all_tnc(:,1), revenue_all_tnc(:,2), '-bo');
+plot(revenue_all(:,1), revenue_all(:,2), '-g*');
+xlabel('adoption rate');
+ylabel('revenue per day (US dollar)')
+legend('all revenue vs private car adoption rate', 'private car revenue', 'TNC revenue');
 
-
-
+hold off;
 
 
 
