@@ -28,14 +28,13 @@ assert(simulation_row(4)==2); %travel mode has to be tnc
 
 %----------------curbside pickup and dropoff + waiting charge--------------
 revenue = 0;
-if  simulation_row(9)==0 % if not AV
-    if simulation_row(2) == 1 %resident
-        revenue = CURBSIDE_PER_TRIP_CHARGE_RESIDENT+temporary_parking_charge;
-    end
+%FIXME: AV doesn't affect TNC for now
+if simulation_row(2) == 1 %resident
+    revenue = CURBSIDE_PER_TRIP_CHARGE_RESIDENT+temporary_parking_charge;
+end
 
-    if simulation_row(2) == 2 %tourist
-        revenue = CURBSIDE_PER_TRIP_CHARGE_ROURIST+temporary_parking_charge;
-    end
+if simulation_row(2) == 2 %tourist
+    revenue = CURBSIDE_PER_TRIP_CHARGE_ROURIST+temporary_parking_charge;
 end
 
 
