@@ -16,12 +16,12 @@ fee_per_20min_econ=2;    %      1                           1
 assert(simulation_row(2)==1 && simulation_row(4)==1 && simulation_row(5)==1); % must be resident and private car
 
 %calculating parking cost
-time = simulation_row(6);
-days = floor(time/24);
-hours = mod(time, 24);
+time_min = simulation_row(7)/60;
+days = floor(time_min/24);
+hours = mod(time_min, 24);
 parking_fee = 0;
 if  simulation_row(9)==0 % if not AV
-    if (simulation_row(6)==1||simulation_row(6)==2) && time>1 %short term and not AV
+    if (simulation_row(6)==1||simulation_row(6)==2) && time_min>0 %short term and not AV
         fee_days = days*max_per_day_short;
         num_20mins = ceil(hours*3);
         fee_hours = num_20mins*fee_per_20min_short;
@@ -31,7 +31,7 @@ if  simulation_row(9)==0 % if not AV
         parking_fee = fee_days+fee_hours;
     end   
 
-    if simulation_row(6)==3 && time > 1%long term and not AV
+    if simulation_row(6)==3 && time_min > 0%long term and not AV
         fee_days = days*max_per_day_long;
         num_20mins = ceil(hours*3);
         fee_hours = num_20mins*fee_per_20min_long;
