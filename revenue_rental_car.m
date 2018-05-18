@@ -9,12 +9,15 @@ RENTAL_CAR_OFF_AIRPORT = 27.32; % Average in may 2017
 assert(simulation_row(2)==2 && simulation_row(4)==3); % must be tourist with rental car
 
 revenue = 0;
-if  simulation_row(9)==0 % if not AV
-    if simulation_row(5)==4
-        revenue = RENTAL_CAR_ON_AIRPORT;
-    end
 
-    if simulation_row(5)==5
-        revenue = RENTAL_CAR_OFF_AIRPORT;
-    end
+%-------------------------------no av -------------------------------------
+
+if simulation_row(5)==4
+    revenue = RENTAL_CAR_ON_AIRPORT;
 end
+if simulation_row(5)==5
+    revenue = RENTAL_CAR_OFF_AIRPORT;
+end
+%------------------------------- av ---------------------------------------
+% if simulation_row(9)==1 %if av
+%     if simulation_row(5)==
