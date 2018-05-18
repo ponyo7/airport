@@ -4,6 +4,7 @@
 % 2. compute revenue for reach person (each row)
 
 clear;
+close all;
 delta = 0.25;
 av_adoption_rates = [0:delta:0.5; 0:delta:0.5; 0:delta:0.5; 0:delta:0.5; 0:delta:0.5]';%20*5: each row represent 5 adoption rate respectively for: private car, tnc, rental car, comfortable, economic
 num_adoption = size(av_adoption_rates, 1);
@@ -48,6 +49,12 @@ for i=1:num_adoption
     sum_revenue_tnc = sum(simulation_all(idx_tnc, 10));
     revenue_all_tnc(i, 1) = av_adoption_rates(i, 2);
     revenue_all_tnc(i, 2) = sum_revenue_tnc;
+    
+    %rental car
+    idx_rental_car = (simulation_all(:,4)==3);
+    sum_revenue_rental_car = sum(simulation_all(idx_rental_car, 10));
+    revenue_all_rental_car(i, 1) = av_adoption_rates(i, 2);
+    revenue_all_rental_car(i, 2) = sum_revenue_rental_car;
     
     %all
     sum_revenue = sum(simulation_all(:,10));
