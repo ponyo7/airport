@@ -5,8 +5,9 @@
 
 clear;
 close all;
-delta = 0.25;
-av_adoption_rates = [0:delta:0.5; 0:delta:0.5; 0:delta:0.5; 0:delta:0.5; 0:delta:0.5]';%20*5: each row represent 5 adoption rate respectively for: private car, tnc, rental car, comfortable, economic
+delta = 0.05;
+
+av_adoption_rates = [0:delta:1; 0:delta:1; 0:delta:1; 0:delta:1; 0:delta:1]';%20*5: each row represent 5 adoption rate respectively for: private car, tnc, rental car, comfortable, economic
 num_adoption = size(av_adoption_rates, 1);
 
 revenue_all_private_car = [];
@@ -65,12 +66,14 @@ end
 %-----draw graph of revenue with AV emgering with current situatin---------
 figure(5);
 hold on;
-plot(revenue_all_private_car(:,1), revenue_all_private_car(:,2), '-*r');
-plot(revenue_all_tnc(:,1), revenue_all_tnc(:,2), '-bo');
 plot(revenue_all(:,1), revenue_all(:,2), '-g*');
+plot(revenue_all_private_car(:,1), revenue_all_private_car(:,2), '->r');
+plot(revenue_all_tnc(:,1), revenue_all_tnc(:,2), '-bo');
+plot(revenue_all_rental_car(:,1), revenue_all_rental_car(:,2), '-c^');
 xlabel('adoption rate');
 ylabel('revenue per day (US dollar)')
-legend('all revenue vs private car adoption rate', 'private car revenue', 'TNC revenue');
+legend('all revenue (private car adoption rate)', 'private car revenue', 'TNC revenue', 'rental car revenue');
+set(gca,'FontSize',16);
 
 hold off;
 
