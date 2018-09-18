@@ -34,7 +34,7 @@ percent_travel_mode_resident = [0.49, 0.33, 0, 0.08, 0.10]; %SFO data from surve
 percent_travel_mode_tourist = [0.27, 0.34, 0.19, 0.11, 0.09]; %%SFO data from survey, 1. private car, 2. tnc and taxis, 3. rental car 4. comfortable public transit, 5. economic public transit
 percent_activity_private_car = [0.12, 0.08, 0.8,0,0]; %park_at_airport, park_off_airport, curbside 
 percent_activity_rental_car = [0,0,0,0.935, 0.065]; %0,0,0 rentalcar_on_airport, rentalcar_off_airport
-percent_parking_mode = [0.95 0.032 0.018 0]; %short term hourly, short term daily, long term, economic parking 
+percent_parking_mode = [0.78 0.12 0.1 0]; %short term hourly, short term daily, long term, economic parking   [0.95 0.032 0.018 0]
 %input parameters of parking duration distribution, short term hourly,
 %short tem daily, long term and economic parking in minutes
 %ALL FAKE NUMBERS NOW
@@ -198,6 +198,8 @@ end
 if flag_plot
     figure(1);
     hist(histogram1);
+    xlabel('minutes');
+    ylabel('short term hourly');
 end
 
 %7.2). parking time--short term daily
@@ -221,6 +223,8 @@ end
 if flag_plot
     figure(2);
     hist(histogram2);
+    xlabel('minutes');
+    ylabel('short term daily');
 end
 
 %7.3).parking time--long term 
@@ -243,6 +247,8 @@ end
 if flag_plot
     figure(3);
     hist(histogram3);
+    xlabel('minutes');
+    ylabel('long term');
 end
 
 %7.4).parking time--economic parking 
@@ -264,6 +270,8 @@ end
 if flag_plot
     figure(4);
     hist(histogram4);
+    xlabel('minutes');
+    ylabel('economic parking');
 end
 
 %------------------col7 parking time off airport---------------------------
