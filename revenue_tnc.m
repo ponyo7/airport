@@ -12,8 +12,8 @@ function revenue = revenue_tnc(simulation_row)
 %will impose more charges to TNC, eg. temproray parking in this case, TNC
 %to airport will not be as cheap as it should be.
 
-CURBSIDE_PER_TRIP_CHARGE_RESIDENT = 3.8; %2017
-CURBSIDE_PER_TRIP_CHARGE_ROURIST = 3.8; %2017
+CURBSIDE_PER_TRIP_CHARGE_RESIDENT = 3.8; %2018.6
+CURBSIDE_PER_TRIP_CHARGE_ROURIST = 3.8; %2018.6
 % delta = 30
 % area = 0.01;
 % Z = norminv(area);
